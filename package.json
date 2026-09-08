@@ -1,0 +1,34 @@
+{
+  "name": "atelier-nord",
+  "description": "Atelier Nord — creative studio site for fashion, beauty & lifestyle brands. Next.js 16, Tailwind, Framer Motion, Lenis.",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev -p 4181",
+    "build": "next build",
+    "start": "next start -p 4181",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "framer-motion": "^13.2.0",
+    "lenis": "^1.3.26",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.4.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.2.18",
+      "@types/react-dom": "19.2.7"
+    }
+  }
+}

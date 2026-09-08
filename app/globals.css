@@ -1,0 +1,150 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-green-400: #4d69ff;
+  --color-green-500: #2242f5;
+  --color-green-600: #1a35d9;
+  --color-green-700: #132ab3;
+  --color-green: #2242f5;
+
+  --color-ink-800: #0c1874;
+  --color-ink-900: #091259;
+  --color-ink: #0f1e8f;
+
+  --color-paper: #ffffff;
+
+  --color-sage: #f7e27e;
+  --color-sage-light: #fff6cf;
+  --color-sage-dark: #edd35c;
+
+  --font-display: var(--font-display-src), Georgia, serif;
+  --font-body: var(--font-body-src), system-ui, sans-serif;
+
+  --tracking-tightest: -0.02em;
+
+  --container-shell: 1680px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.9);
+      opacity: 0.7;
+    }
+    70% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility clip-hidden {
+  /* clip-reveal mask used for scroll image reveals */
+  clip-path: inset(0 0 100% 0);
+}
+
+@utility clip-shown {
+  clip-path: inset(0 0 0 0);
+}
+
+@utility vert-text {
+  writing-mode: vertical-rl;
+}
+
+@layer utilities {
+  :root {
+    --paper: #ffffff;
+    --ink: #0f1e8f;
+    --green: #2242f5;
+    --butter: #f7e27e;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* Lenis smooth scroll */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+
+  ::selection {
+    background: var(--green);
+    color: var(--paper);
+  }
+
+  /* Hide the native scrollbar — Lenis drives smooth scrolling, and hiding it
+   lets the right-edge rail sit flush against the viewport with no sliver. */
+  html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* old Edge */
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none; /* Chrome / Safari */
+  }
+}
+
+/* Respect reduced motion globally for CSS-driven animation */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible focus states for accessibility */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
