@@ -19,12 +19,16 @@ export function CountUp({
   to,
   suffix = "",
   prefix = "",
-  duration = 1.8,
+  duration = 1.2,
   decimals = 0,
   delay = 0,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
+  // Shrink the bottom of the root box so the count starts once the number has
+  // travelled up into view, rather than the instant it clips the bottom edge —
+  // at a normal scroll pace the old trigger meant the run was already ~60%
+  // done by the time the reader was looking at it.
+  const inView = useInView(ref, { once: true, margin: "0px 0px -25% 0px" });
   const reduced = usePrefersReducedMotion();
   const [value, setValue] = useState(0);
 

@@ -22,7 +22,7 @@ export function StatsCounter() {
                   to={s.to}
                   suffix={s.suffix}
                   decimals={s.decimals}
-                  delay={i * 0.12}
+                  delay={i * 0.08}
                 />
               </p>
               <p className="mt-3 max-w-[14ch] text-sm leading-snug text-white/60">
