@@ -5,21 +5,25 @@ export const SERVICES = [
     no: "01",
     title: "Brand Identity",
     body: "Naming, visual systems and art direction that hold together everywhere your brand shows up.",
+    image: IMAGES.feature1,
   },
   {
     no: "02",
     title: "Campaign & Art Direction",
     body: "Concept, casting and set through to final retouch — campaigns with a point of view.",
+    image: IMAGES.feature2,
   },
   {
     no: "03",
     title: "Editorial & Print",
     body: "Lookbooks, packaging and print built with the same care as the collection inside.",
+    image: IMAGES.feature3,
   },
   {
     no: "04",
     title: "Digital & Motion",
     body: "Sites, launches and motion that carry the identity into every feed and screen.",
+    image: IMAGES.hero2,
   },
 ];
 

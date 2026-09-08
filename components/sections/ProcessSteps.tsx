@@ -4,9 +4,9 @@ import { useLayoutEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
-  useSpring,
   useTransform,
   type MotionValue,
+  type Variants,
 } from "framer-motion";
 import { AppImage } from "@/components/ui/AppImage";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -76,6 +76,21 @@ const RAIL_PATH_NARROW = railPath(NODE_X_NARROW);
 const VIEWPORT = { once: true, margin: "-10% 0px" } as const;
 
 /**
+ * Reduced-motion counterpart to `clipReveal` — the same end state, reached with
+ * no clip or scale animation.
+ *
+ * This has to stay a real variant pair rather than `undefined`. The parent sets
+ * `initial="hidden"`, and `usePrefersReducedMotion` only reports true *after*
+ * mount: dropping the variants on that second render left the hidden state
+ * (`inset(0 0 100% 0)`) stranded as an inline style with nothing left to
+ * resolve `show` against, so the photo stayed clipped to nothing forever.
+ */
+const clipRevealStatic: Variants = {
+  hidden: { clipPath: "inset(0 0 0% 0)", scale: 1 },
+  show: { clipPath: "inset(0 0 0% 0)", scale: 1, transition: { duration: 0 } },
+};
+
+/**
  * "How we work" — the four stages as a journey down the page, threaded by a
  * single flowing rail.
  *
@@ -88,15 +103,13 @@ export function ProcessSteps() {
   const reduced = usePrefersReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
+  // Bound straight to scroll: the line tracks the reader 1:1, with no spring
+  // easing it along afterwards. Nothing here moves on its own, so it stays on
+  // under reduced motion — unlike the stage photos and copy below, which do
+  // animate autonomously and are still gated on `reduced`.
+  const { scrollYProgress: drawn } = useScroll({
     target: trackRef,
     offset: ["start 0.8", "end 0.6"],
-  });
-  // Smoothed so the line keeps flowing for a beat after the wheel stops.
-  const drawn = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 30,
-    restDelta: 0.001,
   });
 
   return (
@@ -114,18 +127,13 @@ export function ProcessSteps() {
           <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
             {/* Narrow screens — confined to the gutter the stages indent past. */}
             <div className="absolute inset-y-0 left-0 w-10 lg:hidden">
-              <Rail
-                path={RAIL_PATH_NARROW}
-                progress={drawn}
-                reduced={reduced}
-              />
+              <Rail path={RAIL_PATH_NARROW} progress={drawn} />
               <div className="absolute inset-0 z-20">
                 {STEPS.map((s, i) => (
                   <RailNode
                     key={s.no}
                     progress={drawn}
                     index={i}
-                    reduced={reduced}
                     className="absolute -translate-x-1/2 -translate-y-1/2"
                     style={{
                       left: `${NODE_X_NARROW[i]}%`,
@@ -138,7 +146,7 @@ export function ProcessSteps() {
 
             {/* lg and up */}
             <div className="absolute inset-0 hidden lg:block">
-              <Rail path={RAIL_PATH_WIDE} progress={drawn} reduced={reduced} />
+              <Rail path={RAIL_PATH_WIDE} progress={drawn} />
 
               {/* Markers sit above the photography so the stages stay legible. */}
               <div className="absolute inset-0 z-20">
@@ -147,7 +155,6 @@ export function ProcessSteps() {
                     key={s.no}
                     progress={drawn}
                     index={i}
-                    reduced={reduced}
                     className="absolute -translate-x-1/2 -translate-y-1/2"
                     style={{
                       left: `${NODE_X_WIDE[i]}%`,
@@ -176,7 +183,7 @@ export function ProcessSteps() {
                     }`}
                   >
                     <motion.div
-                      variants={reduced ? undefined : clipReveal}
+                      variants={reduced ? clipRevealStatic : clipReveal}
                       className="absolute inset-0"
                     >
                       <AppImage
@@ -248,11 +255,9 @@ function renderedLength(
 function Rail({
   path,
   progress,
-  reduced,
 }: {
   path: string;
   progress: MotionValue<number>;
-  reduced: boolean;
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const trackRef = useRef<SVGPathElement>(null);
@@ -310,7 +315,7 @@ function Rail({
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
           strokeDasharray={length}
-          style={{ strokeDashoffset: reduced ? 0 : dashoffset }}
+          style={{ strokeDashoffset: dashoffset }}
         />
       )}
     </svg>
@@ -324,13 +329,11 @@ function Rail({
 function RailNode({
   progress,
   index,
-  reduced,
   className = "",
   style,
 }: {
   progress: MotionValue<number>;
   index: number;
-  reduced: boolean;
   className?: string;
   style?: React.CSSProperties;
 }) {
@@ -342,11 +345,7 @@ function RailNode({
     <motion.span
       aria-hidden
       className={`h-[11px] w-[11px] bg-green ring-4 ring-paper ${className}`}
-      style={
-        reduced
-          ? { ...style, opacity: 1, scale: 1 }
-          : { ...style, opacity, scale }
-      }
+      style={{ ...style, opacity, scale }}
     />
   );
 }
