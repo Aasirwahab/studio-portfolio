@@ -10,8 +10,14 @@ import { IMAGES } from "@/lib/images";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { PlayButton } from "@/components/ui/PlayButton";
 import { SliderControls } from "@/components/ui/SliderControls";
-import { staggerContainer, riseItem, EASE_OUT_EXPO } from "@/lib/motion";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 import { useState } from "react";
+
+/**
+ * Stagger for the hero's rising lines, matching the Framer `staggerContainer`
+ * this replaced: a 0.1s lead-in, then 0.08s between each child.
+ */
+const RISE_DELAY = (i: number) => 0.1 + i * 0.08;
 
 const SLIDES = [
   {
@@ -91,11 +97,9 @@ export function HeroSplit() {
             );
           })}
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, ease: EASE_OUT_EXPO }}
-            className="absolute bottom-7 left-7 z-10"
+          <div
+            className="absolute bottom-7 left-7 z-10 animate-fade-up"
+            style={{ animationDelay: "1s" }}
           >
             <SliderControls
               onPrev={() => go(-1)}
@@ -104,21 +108,16 @@ export function HeroSplit() {
               total={SLIDES.length}
               tone="light"
             />
-          </motion.div>
+          </div>
         </div>
 
         {/* RIGHT — content */}
         <div className="flex flex-col">
           {/* Headline card */}
           <div className="flex flex-1 flex-col justify-center px-6 pb-10 pt-12 sm:px-10 lg:px-16 lg:pt-32">
-            <motion.div
-              key={index}
-              variants={staggerContainer(0.08, 0.1)}
-              initial="hidden"
-              animate="show"
-            >
+            <div key={index}>
               <h1 className="font-display text-[2.25rem] font-extrabold leading-[0.95] tracking-tightest text-ink sm:text-6xl sm:leading-[0.92] md:text-7xl lg:text-[5.5rem]">
-                {slide.headline.map((line) => (
+                {slide.headline.map((line, i) => (
                   <span
                     key={line}
                     className="block overflow-hidden"
@@ -131,35 +130,40 @@ export function HeroSplit() {
                       marginBottom: "-0.22em",
                     }}
                   >
-                    <motion.span variants={riseItem} className="block">
+                    <span
+                      className="block animate-rise-in"
+                      style={{ animationDelay: `${RISE_DELAY(i)}s` }}
+                    >
                       {line}
-                    </motion.span>
+                    </span>
                   </span>
                 ))}
               </h1>
 
               <div className="mt-8 flex max-w-xl items-start gap-5">
-                <motion.span
-                  variants={riseItem}
-                  className="mt-3 hidden h-[3px] w-14 shrink-0 bg-green sm:block"
+                <span
+                  className="mt-3 hidden h-[3px] w-14 shrink-0 animate-rise-in bg-green sm:block"
+                  style={{
+                    animationDelay: `${RISE_DELAY(slide.headline.length)}s`,
+                  }}
                 />
-                <motion.p
-                  variants={riseItem}
-                  className="text-base leading-relaxed text-ink/70 sm:text-lg"
+                <p
+                  className="animate-rise-in text-base leading-relaxed text-ink/70 sm:text-lg"
+                  style={{
+                    animationDelay: `${RISE_DELAY(slide.headline.length + 1)}s`,
+                  }}
                 >
                   {slide.eyebrow}
-                </motion.p>
+                </p>
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Lower row — green CTA + video panel */}
           <div className="grid grid-cols-1 sm:grid-cols-2">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, ease: EASE_OUT_EXPO }}
-              className="flex flex-col justify-between gap-7 bg-green px-6 py-9 text-white sm:px-10 sm:py-11"
+            <div
+              className="animate-fade-up flex flex-col justify-between gap-7 bg-green px-6 py-9 text-white sm:px-10 sm:py-11"
+              style={{ animationDelay: "0.9s" }}
             >
               <div className="space-y-3">
                 <h2 className="text-sm font-bold uppercase tracking-[0.14em]">
@@ -173,13 +177,11 @@ export function HeroSplit() {
               <ArrowLink href="/product" tone="light">
                 View work
               </ArrowLink>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, ease: EASE_OUT_EXPO }}
-              className="relative min-h-[220px] overflow-hidden bg-green-700"
+            <div
+              className="animate-fade-up relative min-h-[220px] overflow-hidden bg-green-700"
+              style={{ animationDelay: "1s" }}
             >
               {SLIDES.map((s, i) => (
                 <motion.div
@@ -209,7 +211,7 @@ export function HeroSplit() {
               <div className="absolute inset-0 grid place-items-center">
                 <PlayButton />
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
