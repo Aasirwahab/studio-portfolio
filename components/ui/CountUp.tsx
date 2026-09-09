@@ -14,7 +14,7 @@ interface CountUpProps {
   delay?: number;
 }
 
-/** Counts up to `to` once it scrolls into view (or jumps instantly if reduced). */
+/** Counts up to `to` once it scrolls into view. */
 export function CountUp({
   to,
   suffix = "",
@@ -34,18 +34,18 @@ export function CountUp({
 
   useEffect(() => {
     if (!inView) return;
-    if (reduced) {
-      setValue(to);
-      return;
-    }
+    // Reduced motion still counts, just briefly and plainly: no stagger delay
+    // and no easing flourish. Snapping straight to the final value made the
+    // stat row look like a static block to anyone with the OS setting on,
+    // which is the one audience most likely to think the page had broken.
     const controls = animate(0, to, {
-      duration,
-      delay,
+      duration: reduced ? 0.4 : duration,
+      delay: reduced ? 0 : delay,
       // Quad-out, not the site's expo-out. Expo reaches 75% of the value in
       // the first 20% of the duration, so the number blurs to ~63 and then
       // crawls to 84 for the remaining 1.4s — it reads as a glitch, not a
       // count. This spends real time in the middle and still lands softly.
-      ease: [0.5, 1, 0.89, 1],
+      ease: reduced ? "linear" : [0.5, 1, 0.89, 1],
       onUpdate: (v) => setValue(v),
     });
     return () => controls.stop();
