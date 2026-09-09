@@ -48,8 +48,10 @@ export function PanelVideo({
       muted
       loop
       playsInline
-      // The poster carries first paint, so the video itself never blocks LCP.
-      preload="metadata"
+      // The poster is this clip's own opening frame and weighs ~7KB, so it
+      // carries first paint without reading as a different photo. Fetch the
+      // video eagerly behind it so playback takes over almost immediately.
+      preload="auto"
       aria-hidden
       tabIndex={-1}
       className={className}

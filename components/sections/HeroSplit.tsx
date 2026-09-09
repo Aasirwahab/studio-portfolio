@@ -12,17 +12,7 @@ import { ArrowLink } from "@/components/ui/ArrowLink";
 import { PanelVideo } from "@/components/ui/PanelVideo";
 import { SliderControls } from "@/components/ui/SliderControls";
 import { EASE_OUT_EXPO } from "@/lib/motion";
-import lummiLoader from "@/lib/lummi-loader";
 import { useState } from "react";
-
-/**
- * A `poster` is a plain attribute, so it never passes through next/image and
- * its loader — a bare Lummi URL would serve the full-resolution master into
- * the largest element on the page. Ask the CDN for a sized frame directly.
- */
-const POSTER_WIDTH = 1080;
-const posterFor = (src: string) =>
-  lummiLoader({ src, width: POSTER_WIDTH, quality: HERO_IMAGE_QUALITY });
 
 /**
  * Stagger for the hero's rising lines, matching the Framer `staggerContainer`
@@ -33,12 +23,12 @@ const RISE_DELAY = (i: number) => 0.1 + i * 0.08;
 type Slide = {
   headline: string[];
   eyebrow: string;
-  /** Left-panel still, and the poster frame when the slide carries a video. */
+  /** Left-panel still, used when the slide carries no video. */
   image: string;
   alt: string;
   panel: string;
   /** Optional left-panel background video; the slide falls back to `image`. */
-  video?: string;
+  video?: { src: string; poster: string };
 };
 
 const SLIDES: Slide[] = [
@@ -106,8 +96,8 @@ export function HeroSplit() {
                 <div className="absolute inset-[-6%]">
                   {s.video ? (
                     <PanelVideo
-                      src={s.video}
-                      poster={posterFor(s.image)}
+                      src={s.video.src}
+                      poster={s.video.poster}
                       active={i === index}
                       className="h-full w-full object-cover"
                     />
