@@ -125,7 +125,8 @@ export function HeroSplit() {
                     />
                   )}
                 </div>
-                <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
+                {/* Decorative scrim — must not swallow clicks on the panel. */}
+                <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
               </motion.div>
             );
           })}
