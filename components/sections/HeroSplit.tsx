@@ -10,7 +10,6 @@ import { IMAGES } from "@/lib/images";
 import { VIDEOS } from "@/lib/videos";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { PanelVideo } from "@/components/ui/PanelVideo";
-import { PlayButton } from "@/components/ui/PlayButton";
 import { SliderControls } from "@/components/ui/SliderControls";
 import { EASE_OUT_EXPO } from "@/lib/motion";
 import lummiLoader from "@/lib/lummi-loader";
@@ -242,9 +241,6 @@ export function HeroSplit() {
               <span className="pointer-events-none absolute right-5 top-4 select-none font-display text-7xl font-extrabold leading-none text-white/60 sm:text-8xl">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <div className="absolute inset-0 grid place-items-center">
-                <PlayButton />
-              </div>
             </div>
           </div>
         </div>
