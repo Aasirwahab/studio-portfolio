@@ -7,11 +7,23 @@ import {
 } from "@/components/ui/AppImage";
 import { motion } from "framer-motion";
 import { IMAGES } from "@/lib/images";
+import { VIDEOS } from "@/lib/videos";
 import { ArrowLink } from "@/components/ui/ArrowLink";
+import { PanelVideo } from "@/components/ui/PanelVideo";
 import { PlayButton } from "@/components/ui/PlayButton";
 import { SliderControls } from "@/components/ui/SliderControls";
 import { EASE_OUT_EXPO } from "@/lib/motion";
+import lummiLoader from "@/lib/lummi-loader";
 import { useState } from "react";
+
+/**
+ * A `poster` is a plain attribute, so it never passes through next/image and
+ * its loader — a bare Lummi URL would serve the full-resolution master into
+ * the largest element on the page. Ask the CDN for a sized frame directly.
+ */
+const POSTER_WIDTH = 1080;
+const posterFor = (src: string) =>
+  lummiLoader({ src, width: POSTER_WIDTH, quality: HERO_IMAGE_QUALITY });
 
 /**
  * Stagger for the hero's rising lines, matching the Framer `staggerContainer`
@@ -19,7 +31,18 @@ import { useState } from "react";
  */
 const RISE_DELAY = (i: number) => 0.1 + i * 0.08;
 
-const SLIDES = [
+type Slide = {
+  headline: string[];
+  eyebrow: string;
+  /** Left-panel still, and the poster frame when the slide carries a video. */
+  image: string;
+  alt: string;
+  panel: string;
+  /** Optional left-panel background video; the slide falls back to `image`. */
+  video?: string;
+};
+
+const SLIDES: Slide[] = [
   {
     headline: ["Brands With", "Presence"],
     eyebrow:
@@ -27,6 +50,7 @@ const SLIDES = [
     image: IMAGES.hero1,
     alt: "An editorial fashion portrait in bold colour",
     panel: IMAGES.panel1,
+    video: VIDEOS.heroColdOpen,
   },
   {
     headline: ["Colour, Craft,", "Character"],
@@ -81,16 +105,25 @@ export function HeroSplit() {
               >
                 {/* Slight overscan avoids transform-scale blur during the wipe */}
                 <div className="absolute inset-[-6%]">
-                  <AppImage
-                    src={s.image}
-                    alt={s.alt}
-                    fill
-                    priority={i === 0}
-                    loading={i === 0 ? undefined : "eager"}
-                    quality={HERO_IMAGE_QUALITY}
-                    sizes={HERO_IMAGE_SIZES}
-                    className="object-cover"
-                  />
+                  {s.video ? (
+                    <PanelVideo
+                      src={s.video}
+                      poster={posterFor(s.image)}
+                      active={i === index}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <AppImage
+                      src={s.image}
+                      alt={s.alt}
+                      fill
+                      priority={i === 0}
+                      loading={i === 0 ? undefined : "eager"}
+                      quality={HERO_IMAGE_QUALITY}
+                      sizes={HERO_IMAGE_SIZES}
+                      className="object-cover"
+                    />
+                  )}
                 </div>
                 <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
               </motion.div>
