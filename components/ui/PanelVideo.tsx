@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { PlayButton } from "@/components/ui/PlayButton";
+import { useEffect, useRef } from "react";
 
 interface PanelVideoProps {
   src: string;
-  /** Shown before the first frame decodes, and until playback starts. */
+  /** Shown until the first frame decodes. */
   poster: string;
   /** Only the active slide decodes frames; the rest stay paused. */
   active: boolean;
@@ -14,13 +12,12 @@ interface PanelVideoProps {
 }
 
 /**
- * Background video for a hero panel. It is muted, looping and inline so mobile
- * browsers will start it without a gesture.
+ * Background video for a hero panel. Muted, looping and inline so browsers
+ * start it without a gesture, and paused whenever its slide is not the active
+ * one so the other slides never decode frames.
  *
- * Reduced motion suppresses the *autoplay*, not the video: rather than leaving
- * a still that reads as a broken image, the panel offers a play control so the
- * visitor can start it deliberately. Same principle as CountUp — the
- * preference should mean less unrequested motion, not missing content.
+ * This autoplays regardless of prefers-reduced-motion: the hero is meant to
+ * open on moving footage, and that was the call made for this build.
  */
 export function PanelVideo({
   src,
@@ -29,47 +26,33 @@ export function PanelVideo({
   className = "",
 }: PanelVideoProps) {
   const ref = useRef<HTMLVideoElement>(null);
-  const reduced = usePrefersReducedMotion();
-  const [started, setStarted] = useState(false);
-
-  // Reduced motion waits for the play control; everyone else starts on sight.
-  const shouldPlay = active && (!reduced || started);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (shouldPlay) {
+    if (active) {
       // play() rejects when autoplay is blocked or the tab is backgrounded.
       // The poster stays up in that case, which is the fallback we want.
       el.play().catch(() => {});
     } else {
       el.pause();
     }
-  }, [shouldPlay]);
+  }, [active]);
 
   return (
-    <>
-      <video
-        ref={ref}
-        src={src}
-        poster={poster}
-        muted
-        loop
-        playsInline
-        // The poster carries first paint, so the video itself never blocks LCP.
-        preload="metadata"
-        aria-hidden
-        tabIndex={-1}
-        className={className}
-      />
-      {reduced && !started ? (
-        // The overscan box this sits in is inset symmetrically, so its centre
-        // is still the panel's centre. PlayButton's pulse is motion-safe, so
-        // it stays still here.
-        <div className="absolute inset-0 grid place-items-center">
-          <PlayButton onClick={() => setStarted(true)} />
-        </div>
-      ) : null}
-    </>
+    <video
+      ref={ref}
+      src={src}
+      poster={poster}
+      autoPlay
+      muted
+      loop
+      playsInline
+      // The poster carries first paint, so the video itself never blocks LCP.
+      preload="metadata"
+      aria-hidden
+      tabIndex={-1}
+      className={className}
+    />
   );
 }
