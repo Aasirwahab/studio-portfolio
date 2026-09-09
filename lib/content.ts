@@ -163,10 +163,10 @@ export const VOICES = [
     brand: "Velvet Hour",
   },
   {
-    quote: "The launch film paid for itself in pre-orders before it had finished its first week.",
-    name: "Marenza Vos",
-    role: "Founder",
-    brand: "Maison Lune",
+    quote: "We arrived with a hundred-page brand book nobody had ever opened. They gave us six pages the whole team actually uses.",
+    name: "Elke Sandberg",
+    role: "Managing Director",
+    brand: "Linen & Loom",
   },
   {
     quote: "Calm to work with, ruthless about the details. The best kind of studio.",
@@ -214,4 +214,48 @@ export const CLIENTS = [
   { name: "Marigold Skin", category: "Campaign", year: "2023" },
   { name: "Linen & Loom", category: "Editorial", year: "2022" },
   { name: "Halo Hair", category: "Digital", year: "2022" },
+];
+
+// ---------------------------------------------------------------------------
+// The studio itself — who runs it and how it is put together. The site claims
+// "led hands-on by the founding partners" in three places; this is the part
+// that backs the claim up.
+// ---------------------------------------------------------------------------
+
+export const STUDIO_STORY = {
+  eyebrow: "The people",
+  title: "Who you'll actually work with",
+  body: [
+    "Atelier Nord is nine people on one floor in SoHo. There is no account layer, no strategy department presenting work someone else made, and no version of this studio where the person who pitched you disappears after the kickoff.",
+    "That is a deliberate size. Nine is enough to run an identity, a campaign and a print rollout at once, and small enough that the three of us are still on every project — reading the brief, standing on set, signing off the final frame.",
+  ],
+  facts: [
+    { label: "Founded", value: "2014, SoHo, New York" },
+    { label: "Studio", value: "Nine people, one floor" },
+    { label: "Partners on every project", value: "All three, start to finish" },
+  ],
+};
+
+export const PARTNERS = [
+  {
+    no: "01",
+    name: "Ingrid Halvorsen",
+    role: "Founding Partner — Creative Direction",
+    bio: "Ingrid leads concept and art direction. She spent eight years in fashion editorial before starting the studio, which is why our campaigns are cast and lit like features rather than product shots. If you have had a first conversation with Atelier Nord, it was with her.",
+    leads: ["Concept", "Casting & art direction", "Campaign"],
+  },
+  {
+    no: "02",
+    name: "Mateo Salgado",
+    role: "Founding Partner — Design",
+    bio: "Mateo owns everything with a grid under it: wordmarks, type, palette logic, packaging systems. He is the reason a Bloom Beauty launch now takes an afternoon instead of a week — he builds rules, not one-off artwork.",
+    leads: ["Identity systems", "Type & palette", "Packaging"],
+  },
+  {
+    no: "03",
+    name: "Rae Okonkwo",
+    role: "Partner — Production",
+    bio: "Rae runs the floor. Budgets, schedules, crew, the nine-evening shoot that should not have been possible. Nothing here is outsourced because Rae would rather do it in the room than explain it over email.",
+    leads: ["Production", "Post & retouch", "Rollout"],
+  },
 ];

@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
-import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
-import { ResultsBand } from "@/components/sections/ResultsBand";
 import { QuoteWall } from "@/components/sections/QuoteWall";
+import { ResultsBand } from "@/components/sections/ResultsBand";
 import { PressStrip } from "@/components/sections/PressStrip";
-import { LogoMarquee } from "@/components/sections/LogoMarquee";
 import { ClientIndex } from "@/components/sections/ClientIndex";
 import { CTABanner } from "@/components/sections/CTABanner";
 import { IMAGES } from "@/lib/images";
@@ -26,11 +24,9 @@ export default function TestimonialPage() {
         imageAlt="On set with the Atelier Nord team"
         numeral="03"
       />
-      <TestimonialCarousel />
-      <ResultsBand />
       <QuoteWall />
+      <ResultsBand />
       <PressStrip />
-      <LogoMarquee />
       <ClientIndex />
       <CTABanner />
     </>

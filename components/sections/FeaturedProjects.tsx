@@ -5,6 +5,7 @@ import { LightboxImage } from "@/components/ui/LightboxImage";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { PROJECTS } from "@/lib/content";
+import { caseStudyByName } from "@/lib/case-studies";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SliderControls } from "@/components/ui/SliderControls";
 import { ArrowLink } from "@/components/ui/ArrowLink";
@@ -13,6 +14,7 @@ import { EASE_OUT_EXPO } from "@/lib/motion";
 export function FeaturedProjects() {
   const [[index, prev], setState] = useState<[number, number | null]>([0, null]);
   const project = PROJECTS[index];
+  const study = caseStudyByName(project.title);
   const select = (i: number) => setState(([cur]) => (i === cur ? [cur, prev] : [i, cur]));
   const go = (d: number) =>
     setState(([i]) => [(i + d + PROJECTS.length) % PROJECTS.length, i]);
@@ -114,7 +116,13 @@ export function FeaturedProjects() {
             </div>
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-              <ArrowLink href="/product">View case study</ArrowLink>
+              {study ? (
+                <ArrowLink href={`/product/${study.slug}`}>
+                  View case study
+                </ArrowLink>
+              ) : (
+                <ArrowLink href="/product">See all work</ArrowLink>
+              )}
               <SliderControls
                 onPrev={() => go(-1)}
                 onNext={() => go(1)}

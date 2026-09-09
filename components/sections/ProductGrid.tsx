@@ -4,6 +4,8 @@ import { LightboxImage } from "@/components/ui/LightboxImage";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { PRODUCTS, PRODUCT_CATEGORIES } from "@/lib/content";
+import { caseStudyByName } from "@/lib/case-studies";
+import { TransitionLink } from "@/components/ui/TransitionLink";
 import { EASE_OUT_EXPO } from "@/lib/motion";
 
 /** Filterable product/solutions grid with an animated layout + shared active pill. */
@@ -60,7 +62,9 @@ export function ProductGrid() {
           className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
         >
           <AnimatePresence mode="popLayout">
-            {items.map((p) => (
+            {items.map((p) => {
+              const study = caseStudyByName(p.name);
+              return (
               <motion.article
                 key={p.name}
                 layout
@@ -92,12 +96,22 @@ export function ProductGrid() {
                   <h3 className="font-display text-lg font-bold leading-tight text-white">
                     {p.name}
                   </h3>
-                  <span className="mt-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-sage opacity-0 transition-all duration-500 group-hover:opacity-100">
-                    View spec →
-                  </span>
+                  {study ? (
+                    <TransitionLink
+                      href={`/product/${study.slug}`}
+                      className="pointer-events-auto relative z-10 mt-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-sage opacity-0 transition-opacity duration-500 hover:text-white focus-visible:opacity-100 group-hover:opacity-100"
+                    >
+                      Case study <span aria-hidden>→</span>
+                    </TransitionLink>
+                  ) : (
+                    <span className="mt-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-sage opacity-0 transition-all duration-500 group-hover:opacity-100">
+                      View spec →
+                    </span>
+                  )}
                 </div>
               </motion.article>
-            ))}
+              );
+            })}
           </AnimatePresence>
         </motion.div>
       </div>
