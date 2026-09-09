@@ -5,13 +5,13 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { VOICES } from "@/lib/content";
 import { fadeUp } from "@/lib/motion";
 
-/** Six shorter voices in a hairline grid; a card inverts to ink on hover. */
+/** Six client voices in a hairline grid; a card inverts to ink on hover. */
 export function QuoteWall() {
   return (
     <section className="border-t border-ink/10 bg-paper">
       <div className="mx-auto max-w-shell px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
         <SectionHeading
-          eyebrow="More voices"
+          eyebrow="Client voices"
           title="What it's like to work with us"
           intro="From the founders, brand leads and creative directors on the other side of the table."
         />

@@ -7,8 +7,9 @@ import {
 } from "@/components/ui/AppImage";
 import { motion } from "framer-motion";
 import { IMAGES } from "@/lib/images";
+import { VIDEOS } from "@/lib/videos";
 import { ArrowLink } from "@/components/ui/ArrowLink";
-import { PlayButton } from "@/components/ui/PlayButton";
+import { PanelVideo } from "@/components/ui/PanelVideo";
 import { SliderControls } from "@/components/ui/SliderControls";
 import { EASE_OUT_EXPO } from "@/lib/motion";
 import { useState } from "react";
@@ -19,7 +20,18 @@ import { useState } from "react";
  */
 const RISE_DELAY = (i: number) => 0.1 + i * 0.08;
 
-const SLIDES = [
+type Slide = {
+  headline: string[];
+  eyebrow: string;
+  /** Left-panel still, used when the slide carries no video. */
+  image: string;
+  alt: string;
+  panel: string;
+  /** Optional left-panel background video; the slide falls back to `image`. */
+  video?: { src: string; poster: string };
+};
+
+const SLIDES: Slide[] = [
   {
     headline: ["Brands With", "Presence"],
     eyebrow:
@@ -27,6 +39,7 @@ const SLIDES = [
     image: IMAGES.hero1,
     alt: "An editorial fashion portrait in bold colour",
     panel: IMAGES.panel1,
+    video: VIDEOS.heroColdOpen,
   },
   {
     headline: ["Colour, Craft,", "Character"],
@@ -81,18 +94,28 @@ export function HeroSplit() {
               >
                 {/* Slight overscan avoids transform-scale blur during the wipe */}
                 <div className="absolute inset-[-6%]">
-                  <AppImage
-                    src={s.image}
-                    alt={s.alt}
-                    fill
-                    priority={i === 0}
-                    loading={i === 0 ? undefined : "eager"}
-                    quality={HERO_IMAGE_QUALITY}
-                    sizes={HERO_IMAGE_SIZES}
-                    className="object-cover"
-                  />
+                  {s.video ? (
+                    <PanelVideo
+                      src={s.video.src}
+                      poster={s.video.poster}
+                      active={i === index}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <AppImage
+                      src={s.image}
+                      alt={s.alt}
+                      fill
+                      priority={i === 0}
+                      loading={i === 0 ? undefined : "eager"}
+                      quality={HERO_IMAGE_QUALITY}
+                      sizes={HERO_IMAGE_SIZES}
+                      className="object-cover"
+                    />
+                  )}
                 </div>
-                <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
+                {/* Decorative scrim — must not swallow clicks on the panel. */}
+                <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
               </motion.div>
             );
           })}
@@ -208,9 +231,6 @@ export function HeroSplit() {
               <span className="pointer-events-none absolute right-5 top-4 select-none font-display text-7xl font-extrabold leading-none text-white/60 sm:text-8xl">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <div className="absolute inset-0 grid place-items-center">
-                <PlayButton />
-              </div>
             </div>
           </div>
         </div>
