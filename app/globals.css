@@ -131,7 +131,11 @@
     background: var(--paper);
     color: var(--ink);
     font-family: var(--font-body);
-    overflow-x: hidden;
+    /* `clip`, not `hidden`: hidden makes body a scroll container on both axes,
+     which competes with Lenis for the scroll position and shows up as a
+     judder while scrolling. `clip` cuts the same horizontal overflow without
+     creating a scroll container. */
+    overflow-x: clip;
   }
 
   /* Lenis smooth scroll */

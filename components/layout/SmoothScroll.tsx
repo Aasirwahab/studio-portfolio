@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactLenis, type LenisRef } from "lenis/react";
+import { useAnimationFrame } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
@@ -17,6 +18,16 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<LenisRef>(null);
   const pathname = usePathname();
 
+  // Lenis runs its own requestAnimationFrame loop by default, separate from
+  // the one Framer Motion drives useScroll/useTransform on. Two loops means
+  // the scroll-linked parallax in ProcessSteps and GiantNumeral can read a
+  // scroll position Lenis has already moved past, so those elements judder
+  // against the page. Driving Lenis from Motion's loop puts the write and
+  // every read in one ordered frame. Requires autoRaf={false} below.
+  useAnimationFrame((time) => {
+    lenisRef.current?.lenis?.raf(time);
+  });
+
   // Reset scroll position on navigation (covered by the page-transition curtain).
   useEffect(() => {
     const lenis = lenisRef.current?.lenis;
@@ -28,6 +39,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     <ReactLenis
       root
       ref={lenisRef}
+      autoRaf={false}
       options={{
         // Lenis smooths via EITHER lerp OR duration+easing, and duration wins
         // when both are set — the previous config passed both, so its lerp was
